@@ -42,7 +42,7 @@ app = Flask(
     static_folder="../frontend/static"
 )
 
-app.config["SECRET_KEY"] = "cybersecure-secret-key"
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
 
 # =====================================================
