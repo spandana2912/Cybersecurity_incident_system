@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-container">
+
+    <h1>Incident Management</h1>
+
+    <div class="top-actions">
+
+        <a class="button"
+           href="{{ url_for('report_incident') }}">
+            + Report New Incident
+        </a>
+
+    </div>
+
+
+    <div class="filter-box">
+
+        <form method="GET"
+              action="{{ url_for('incidents') }}">
+
+            <input
+                type="text"
+                name="search"
+                placeholder="Search incidents..."
+                value="{{ search }}"
+            >
+
+            <select name="severity">
+
+                <option value="">
+                    All Severities
+                </option>
+
+                <option value="Critical"
+                    {% if selected_severity == "Critical" %}selected{% endif %}>
+                    Critical
+                </option>
+
+                <option value="High"
+                    {% if selected_severity == "High" %}selected{% endif %}>
+                    High
+                </option>
+
+                <option value="Medium"
+                    {% if selected_severity == "Medium" %}selected{% endif %}>
+                    Medium
+                </option>
+
+                <option value="Low"
+                    {% if selected_severity == "Low" %}selected{% endif %}>
+                    Low
+                </option>
+
+            </select>
+
+
+            <select name="status">
+
+                <option value="">
+                    All Status
+                </option>
+
+                <option value="Reported"
+                    {% if selected_status == "Reported" %}selected{% endif %}>
+                    Reported
+                </option>
+
+                <option value="Investigating"
+                    {% if selected_status == "Investigating" %}selected{% endif %}>
+                    Investigating
+                </option>
+
+                <option value="Resolved"
+                    {% if selected_status == "Resolved" %}selected{% endif %}>
+                    Resolved
+                </option>
+
+            </select>
+
+
+            <button type="submit">
+                Search
+            </button>
+
+            <a href="{{ url_for('incidents') }}">
+                Clear
+            </a>
+
+        </form>
+
+    </div>
+
+
+    {% if incidents %}
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Title</th>
+
+                    <th>Type</th>
+
+                    <th>Severity</th>
+
+                    <th>Status</th>
+
+                    <th>Reported By</th>
+
+                    <th>Date</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for incident in incidents %}
+
+                <tr>
+
+                    <td>
+                        {{ incident.id }}
+                    </td>
+
+                    <td>
+                        {{ incident.title }}
+                    </td>
+
+                    <td>
+                        {{ incident.incident_type }}
+                    </td>
+
+                    <td>
+                        {{ incident.severity }}
+                    </td>
+
+                    <td>
+                        {{ incident.status }}
+                    </td>
+
+                    <td>
+                        {{ incident.reporter.name }}
+                    </td>
+
+                    <td>
+                        {{ incident.created_at.strftime('%d-%m-%Y %H:%M') }}
+                    </td>
+
+                    <td>
+
+                        <a href="{{ url_for(
+                            'incident_detail',
+                            incident_id=incident.id
+                        ) }}">
+                            View
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-box">
+
+        <h3>No incidents found</h3>
+
+        <p>
+            There are currently no incidents matching your search.
+        </p>
+
+        <a class="button"
+           href="{{ url_for('report_incident') }}">
+            Report an Incident
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

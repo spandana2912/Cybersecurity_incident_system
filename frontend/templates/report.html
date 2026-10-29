@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="form-container">
+
+    <h1>Report Cybersecurity Incident</h1>
+
+    <p>Enter the details of the cybersecurity incident below.</p>
+
+    <form method="POST"
+          action="{{ url_for('report_incident') }}"
+          enctype="multipart/form-data">
+
+        <label>Incident Title</label>
+
+        <input
+            type="text"
+            name="title"
+            placeholder="Example: Phishing Email Attack"
+            required
+        >
+
+
+        <label>Incident Type</label>
+
+        <select name="incident_type" required>
+
+            <option value="">
+                Select Incident Type
+            </option>
+
+            <option value="Phishing">
+                Phishing
+            </option>
+
+            <option value="Malware">
+                Malware
+            </option>
+
+            <option value="Ransomware">
+                Ransomware
+            </option>
+
+            <option value="Unauthorized Access">
+                Unauthorized Access
+            </option>
+
+            <option value="Data Breach">
+                Data Breach
+            </option>
+
+            <option value="DDoS Attack">
+                DDoS Attack
+            </option>
+
+            <option value="Password Attack">
+                Password Attack
+            </option>
+
+            <option value="Other">
+                Other
+            </option>
+
+        </select>
+
+
+        <label>Severity</label>
+
+        <select name="severity" required>
+
+            <option value="">
+                Select Severity
+            </option>
+
+            <option value="Critical">
+                Critical
+            </option>
+
+            <option value="High">
+                High
+            </option>
+
+            <option value="Medium">
+                Medium
+            </option>
+
+            <option value="Low">
+                Low
+            </option>
+
+        </select>
+
+
+        <label>Affected System</label>
+
+        <input
+            type="text"
+            name="affected_system"
+            placeholder="Example: Company Email Server"
+        >
+
+
+        <label>Incident Description</label>
+
+        <textarea
+            name="description"
+            rows="7"
+            placeholder="Describe what happened..."
+            required
+        ></textarea>
+
+
+        <!-- EVIDENCE IMAGE -->
+
+        <label>Evidence Image</label>
+
+        <input
+            type="file"
+            name="evidence_image"
+            accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
+        >
+
+        <p class="upload-help">
+            Upload a screenshot or image related to the incident.
+            Supported formats: PNG, JPG, JPEG, GIF, WEBP.
+            Maximum size: 10 MB.
+        </p>
+
+
+        <button type="submit">
+            Submit Incident
+        </button>
+
+        <a
+            class="cancel-button"
+            href="{{ url_for('dashboard') }}"
+        >
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

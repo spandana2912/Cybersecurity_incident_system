@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cybersecurity Incident Management</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Cyber Incident Management
+        </div>
+
+        {% if current_user.is_authenticated %}
+
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('report_incident') }}">Report Incident</a>
+            <a href="{{ url_for('incidents') }}">Incidents</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+
+        {% endif %}
+
+    </nav>
+
+    <!-- Academic Project Disclaimer -->
+    <div class="demo-disclaimer">
+        <strong>⚠️ Academic Project — Demo Only</strong>
+        <p>
+            This website is developed solely for college project
+            demonstration purposes. It is not a real cybersecurity
+            incident response service. Reports are not monitored or
+            forwarded to any real cybersecurity team or authority.
+            Do not submit real incidents, passwords, or confidential
+            personal information.
+        </p>
+    </div>
+
+    <div class="flash-messages">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% for category, message in messages %}
+
+                <div class="alert {{ category }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endwith %}
+
+    </div>
+
+    <main class="main-content">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+    <footer class="site-footer">
+        <p>Cybersecurity Incident Management System</p>
+        <p>College Project | Educational Demonstration Only</p>
+        <p>This platform does not provide real incident response services.</p>
+    </footer>
+
+</body>
+
+</html>
+```

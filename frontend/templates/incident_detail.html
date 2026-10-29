@@ -1,0 +1,521 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Incident Details</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            color: #1e293b;
+        }
+
+        .navbar {
+            background: #0f172a;
+            color: white;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            font-size: 22px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 35px auto;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .detail {
+            margin-bottom: 18px;
+        }
+
+        .detail strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #475569;
+        }
+
+        .detail span {
+            font-size: 16px;
+        }
+
+        .description {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        form {
+            margin-top: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #334155;
+        }
+
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            margin-bottom: 18px;
+            font-size: 15px;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .response {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .response strong {
+            color: #1e293b;
+        }
+
+        .response small {
+            color: #64748b;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .analyst-info {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+
+        <h2>🛡️ Cybersecurity Incident Management</h2>
+
+        <div>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('incidents') }}">Incidents</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+
+    </div>
+
+
+    <div class="container">
+
+        <a href="{{ url_for('incidents') }}" class="back">
+            ← Back to Incidents
+        </a>
+
+
+        <!-- FLASH MESSAGES -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="message {{ category }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- INCIDENT DETAILS -->
+
+        <div class="card">
+
+            <h1>{{ incident.title }}</h1>
+
+
+            <div class="detail">
+                <strong>Incident Type</strong>
+                <span>{{ incident.incident_type }}</span>
+            </div>
+
+
+            <div class="detail">
+                <strong>Severity</strong>
+                <span>{{ incident.severity }}</span>
+            </div>
+
+
+            <div class="detail">
+                <strong>Status</strong>
+                <span>{{ incident.status }}</span>
+            </div>
+
+
+            <div class="detail">
+                <strong>Affected System</strong>
+                <span>
+                    {{ incident.affected_system or "Not specified" }}
+                </span>
+            </div>
+
+
+            <div class="detail">
+                <strong>Reported By</strong>
+                <span>
+                    {{ incident.reporter.name }}
+                </span>
+            </div>
+
+
+            <div class="detail">
+                <strong>Assigned Analyst</strong>
+                <span>
+                    {{ incident.assigned_to or "Not assigned" }}
+                </span>
+            </div>
+
+
+            <div class="detail">
+
+                <strong>Description</strong>
+
+                <div class="description">
+                    {{ incident.description }}
+                </div>
+
+            </div>
+
+
+            {% if incident.evidence_image %}
+
+                <div class="detail">
+
+                    <strong>Evidence Image</strong>
+
+                    <img
+                        src="{{ url_for('static', filename='uploads/' + incident.evidence_image) }}"
+                        style="max-width: 100%; border-radius: 8px;"
+                    >
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- ADMIN UPDATE -->
+
+        {% if current_user.role == "admin" %}
+
+        <div class="card">
+
+            <h2>Update Incident</h2>
+
+
+            <div class="analyst-info">
+
+                <strong>Available Analysts:</strong>
+
+                {% if analysts %}
+
+                    {{ analysts|length }} analyst(s) available.
+
+                {% else %}
+
+                    No users with the analyst role were found.
+
+                {% endif %}
+
+            </div>
+
+
+            <form
+                method="POST"
+                action="{{ url_for('update_incident', incident_id=incident.id) }}"
+            >
+
+
+                <label for="status">
+                    Status
+                </label>
+
+                <select
+                    name="status"
+                    id="status"
+                >
+
+                    <option
+                        value="Reported"
+                        {% if incident.status == "Reported" %}selected{% endif %}
+                    >
+                        Reported
+                    </option>
+
+                    <option
+                        value="Investigating"
+                        {% if incident.status == "Investigating" %}selected{% endif %}
+                    >
+                        Investigating
+                    </option>
+
+                    <option
+                        value="Resolved"
+                        {% if incident.status == "Resolved" %}selected{% endif %}
+                    >
+                        Resolved
+                    </option>
+
+                </select>
+
+
+                <label for="severity">
+                    Severity
+                </label>
+
+                <select
+                    name="severity"
+                    id="severity"
+                >
+
+                    <option
+                        value="Low"
+                        {% if incident.severity == "Low" %}selected{% endif %}
+                    >
+                        Low
+                    </option>
+
+                    <option
+                        value="Medium"
+                        {% if incident.severity == "Medium" %}selected{% endif %}
+                    >
+                        Medium
+                    </option>
+
+                    <option
+                        value="High"
+                        {% if incident.severity == "High" %}selected{% endif %}
+                    >
+                        High
+                    </option>
+
+                    <option
+                        value="Critical"
+                        {% if incident.severity == "Critical" %}selected{% endif %}
+                    >
+                        Critical
+                    </option>
+
+                </select>
+
+
+                <!-- ANALYST DROPDOWN -->
+
+                <label for="assigned_to">
+                    Assign To Analyst
+                </label>
+
+                <select
+                    name="assigned_to"
+                    id="assigned_to"
+                >
+
+                    <option value="">
+                        -- Select Analyst --
+                    </option>
+
+
+                    {% for analyst in analysts %}
+
+                        <option
+                            value="{{ analyst.name }}"
+                            {% if incident.assigned_to == analyst.name %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ analyst.name }} - {{ analyst.email }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <button
+                    type="submit"
+                    class="btn"
+                >
+                    Update Incident
+                </button>
+
+            </form>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- RESPONSES -->
+
+        <div class="card">
+
+            <h2>Response Actions</h2>
+
+
+            {% if incident.responses %}
+
+                {% for response in incident.responses %}
+
+                    <div class="response">
+
+                        <strong>
+                            {{ response.responder }}
+                        </strong>
+
+                        <br>
+
+                        {{ response.action_taken }}
+
+                        <br>
+
+                        <small>
+                            {{ response.created_at }}
+                        </small>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>No response actions yet.</p>
+
+            {% endif %}
+
+
+            {% if current_user.role == "admin"
+                  or incident.reported_by == current_user.id %}
+
+                <form
+                    method="POST"
+                    action="{{ url_for('add_response', incident_id=incident.id) }}"
+                >
+
+                    <label for="action_taken">
+                        Add Response Action
+                    </label>
+
+                    <textarea
+                        name="action_taken"
+                        id="action_taken"
+                        placeholder="Enter action taken..."
+                        required
+                    ></textarea>
+
+
+                    <button
+                        type="submit"
+                        class="btn"
+                    >
+                        Add Response
+                    </button>
+
+                </form>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</body>
+</html>
+```

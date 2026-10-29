@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="dashboard-container">
+
+    <h1>Cybersecurity Incident Dashboard</h1>
+
+    <p>Welcome, {{ current_user.name }}!</p>
+
+    <div class="stats">
+
+        <div class="stat-card">
+            <h3>Total Incidents</h3>
+            <p>{{ total }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Critical</h3>
+            <p>{{ critical }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>High</h3>
+            <p>{{ high }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Investigating</h3>
+            <p>{{ investigating }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Resolved</h3>
+            <p>{{ resolved }}</p>
+        </div>
+
+    </div>
+
+
+    <div class="dashboard-actions">
+
+        <a href="{{ url_for('report_incident') }}">
+            Report New Incident
+        </a>
+
+        <a href="{{ url_for('incidents') }}">
+            View All Incidents
+        </a>
+
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
+
+    </div>
+
+
+    <h2>Recent Incidents</h2>
+
+    {% if incidents %}
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Severity</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for incident in incidents %}
+
+            <tr>
+
+                <td>{{ incident.id }}</td>
+
+                <td>{{ incident.title }}</td>
+
+                <td>{{ incident.incident_type }}</td>
+
+                <td>{{ incident.severity }}</td>
+
+                <td>{{ incident.status }}</td>
+
+                <td>
+                    <a href="{{ url_for('incident_detail', incident_id=incident.id) }}">
+                        View
+                    </a>
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <p>No incidents reported yet.</p>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
